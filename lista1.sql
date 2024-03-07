@@ -6,7 +6,10 @@ SELECT NOME FROM CATEGORIA WHERE valor_dia between 100.00 and 200.00;
 -- 2. Categorias cujos nomes possuam a palavra ‘Luxo’.
 select nome from categoria where nome ilike '%luxo%';
 -- 3. Nomes \de categorias de apartamentos que foram ocupados há mais de 5 anos.
-select nome from categoria,apartamento,hospedagem where dt_sai 
+SELECT NOME FROM CATEGORIA C 
+JOIN APARTAMENTO A ON C.COD_CAT = A.COD_CAT 
+JOIN HOSPEDAGEM H ON A.NUM = H.NUM
+  WHERE DT_ENT <= NOW() - INTERVAL '5 YEARS';
 -- 4. Apartamentos que estão ocupados, ou seja, a data de saída está vazia.
 select num from hospedagem where dt_sai is NULL;
 -- 5. Apartamentos cuja categoria tenha código 1, 2, 3, 11, 34, 54, 24, 12.
