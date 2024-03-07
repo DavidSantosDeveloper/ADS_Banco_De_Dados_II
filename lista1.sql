@@ -39,7 +39,7 @@ select count(cod_hosp) from hospede;
 -- 17. Apartamentos que foram ocupados pelo menos 2 vezes.
   select num,count(num) from hospedagem    group by num having count(num)>=2
 -- 18. Altere a tabela Hóspede, acrescentando o campo "Nacionalidade".
-Alter table hospede Add nascionalidade varchar(50) not null.
+Alter table hospede Add nascionalidade varchar(50) not null default 'brasil'.
 -- 19.Quantidade de hóspedes para cada nacionalidade.
 select nascionalidade,count(nascionalidade) from hospede group by nascionalidade;
 -- 20. A data de nascimento do hóspede mais velho.
