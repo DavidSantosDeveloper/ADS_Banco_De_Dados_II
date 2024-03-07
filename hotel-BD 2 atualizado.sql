@@ -61,18 +61,25 @@
 		DT_PREV_SAI DATE NOT NULL
 	}
 
-	CREATE TABLE ATENDENTE (
-		COD_ATEND INT NOT NULL,
+
+
+	CREATE TABLE FUNCIONARIO (
+		COD_FUNC INT NOT NULL,
 		NOME VARCHAR(50) NOT NULL,
-		DT_NASC DATE NOT NULL,
-		CONSTRAINT PRI_ATEND PRIMARY KEY(COD_ATEND)
+		SALARIO float null,
+		DT_NASC DATE NOT NULL,	
+		CONSTRAINT PRI_FUNC PRIMARY KEY(COD_FUNC)
 	);
+	insert into funcionario values(1,'maria jose',1412.00,'2000-01-01')
 
 	-- ALTER TABLE table_name ADD COLUMN column_definition;
 
-	ALTER TABLE hospedagem ADD COLUMN cod_atend int not null REFERENCES ATENDENTE(cod_atend);
+	ALTER TABLE hospedagem ADD COLUMN cod_func int not null REFERENCES funcionario(cod_func) default 1;
 
-	ALTER TABLE reserva ADD COLUMN cod_atend int not null REFERENCES ATENDENTE(cod_atend);
+	ALTER TABLE reserva ADD COLUMN cod_func int not null REFERENCES funcionario(cod_func) default 1;
+
+
+
 
 -- Inserindo dados:
  
