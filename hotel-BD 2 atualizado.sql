@@ -106,6 +106,13 @@
 		(1, 1, 101, '2022-02-28', '2022-03-03'), 
 		(2, 2, 103, '2022-03-10', NULL), 
 		(3, 3, 102, '2022-03-15', '2022-03-20');
+
+insert into apartamento values(104,'L',3)
+insert into apartamento values(105,'L',3)
+
+insert into hospedagem values(4,1,104,'2024-01-01','2024-01-30')
+insert into hospedagem values(5,2,104,'2024-02-05','2024-02-15')
+insert into hospedagem values(6,3,105,'2024-03-13','2024-03-25')
 		
 	/*	
 	INSERT INTO SERVICO (COD_SERV, NOME, VALOR) 
@@ -121,91 +128,3 @@
 		(3, 3, 2, '2022-03-17', 3);
 	*/
 
-	
--- Operadores importantes:
-	-- O operador "ilike" é utilizado para fazer a comparação de forma "case-insensitive"; 
-	-- O caractere "_" (underline) representa uma posição para qualquer caractere na sequência de caracteres;
-	-- O símbolo "%" é um caractere curinga na linguagem SQL que representa uma sequência de zero ou mais caracteres de qualquer tipo.
-	
--- Operações básicas:
-	-- 1. Selecionar o nome dos hóspedes com código maior do que 2:
-		SELECT NOME 
-		FROM HOSPEDE 
-		WHERE COD_HOSP > 2;
-
-	-- 2. Selecionar o nome dos hóspedes que nasceram em 2000:
-		SELECT NOME 
-		FROM HOSPEDE 
-		WHERE DT_NASC >= '2000-01-01' AND DT_NASC <= '2000-12-31';
-
-		-- Usando "between":
-			SELECT NOME 
-			FROM HOSPEDE 
-			WHERE DT_NASC BETWEEN '2000-01-01' AND '2000-12-31';
-
-	-- 3. Selecionar o nome dos hóspedes que começam com a letra "M":
-		SELECT NOME 
-		FROM HOSPEDE 
-		WHERE NOME LIKE 'M%';
-
-		-- Usando "ilike":
-			SELECT NOME 
-			FROM HOSPEDE 
-			WHERE NOME ILIKE 'M%';
-	
-	-- 4. Selecionar o nome dos hóspedes cujos nomes contêm a letra "a":
-		SELECT NOME 
-		FROM HOSPEDE 
-		WHERE NOME ILIKE '%A%';
-
-	-- 5. Selecionar o nome dos hóspedes cujos nomes não contêm a letra "a":
-		SELECT NOME 
-		FROM HOSPEDE 
-		WHERE NOME NOT ILIKE '%A%';
-
-	-- 6. Selecionar o nome dos hóspedes cujo o nome começa com uma letra qualquer, seguida de "h"
-		SELECT NOME 
-		FROM HOSPEDE 
-		WHERE NOME ILIKE '_H%';
-
-	-- 7. Selecionar o código e o nome dos hóspedes que se hospedaram em um apartamento da categoria "2":
-		SELECT COD_HOSP, NOME 
-		FROM HOSPEDE 
-		WHERE COD_HOSP IN 
-		(SELECT COD_HOSP FROM HOSPEDAGEM WHERE NUM IN 
-		(SELECT NUM FROM APARTAMENTO WHERE COD_CAT = 2));
-
-	-- 8. Selecionar o nome dos hóspedes que se hospedaram na data "2022-03-15":
-		SELECT NOME 
-		FROM HOSPEDE 
-		WHERE COD_HOSP IN 
-		(SELECT COD_HOSP FROM HOSPEDAGEM WHERE DT_ENT = '2022-03-15');
-
-	-- 9. Selecionar o código e o nome dos hóspedes que se hospedaram em um apartamento da categoria "Luxo":
-		SELECT COD_HOSP, NOME 
-		FROM HOSPEDE 
-		WHERE COD_HOSP IN 
-		(SELECT COD_HOSP FROM HOSPEDAGEM WHERE NUM IN 
-		(SELECT NUM FROM APARTAMENTO WHERE COD_CAT IN 
-		(SELECT COD_CAT FROM CATEGORIA WHERE NOME = 'Luxo')));
-
-	-- 10. Selecionar o código e o nome dos hóspedes que se hospedaram em um apartamento da categoria "Luxo" ou que fizeram solicitação do serviço "3":
-		SELECT COD_HOSP, NOME 
-		FROM HOSPEDE 
-		WHERE COD_HOSP IN 
-		(SELECT COD_HOSP FROM HOSPEDAGEM WHERE NUM IN 
-		(SELECT NUM FROM APARTAMENTO WHERE COD_CAT IN 
-		(SELECT COD_CAT FROM CATEGORIA WHERE NOME = 'Luxo')) OR COD_HOSPEDA IN 
-		(SELECT COD_HOSPEDA FROM SOLICITACAO WHERE COD_SERV = 3));
-
-	-- 11. Selecionar o nome do hóspede com a data mais antiga de entrada:
-		SELECT NOME 
-		FROM HOSPEDE 
-		WHERE COD_HOSP IN 
-		(SELECT COD_HOSP FROM HOSPEDAGEM WHERE DT_ENT = (SELECT MIN(DT_ENT) FROM HOSPEDAGEM));
-
-	-- 12. Selecionar o nome do hóspede com a data mais antiga de entrada em 2022:
-		SELECT NOME 
-		FROM HOSPEDE 
-		WHERE COD_HOSP IN 
-		(SELECT COD_HOSP FROM HOSPEDAGEM WHERE DT_ENT = (SELECT MIN(DT_ENT) FROM HOSPEDAGEM WHERE DT_ENT BETWEEN '2022-01-01' AND '2022-12-31'));
