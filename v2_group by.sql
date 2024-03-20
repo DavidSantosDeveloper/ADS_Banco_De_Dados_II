@@ -72,3 +72,10 @@ WHERE NOT EXISTS (
     )
 );
 	
+	
+	
+-- infomaçoes dos APTOS que se hospedaram em todos os HOSPEDES
+select A.num from  hospede h
+	join hospedagem hpg on h.cod_hosp=hpg.cod_hosp
+	join apartamento a on hpg.num=a.num
+	group by a.num having count (distinct hpg.cod_hosp) = (select count(cod_hosp) from hospede)	 
