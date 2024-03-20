@@ -42,13 +42,18 @@ select * from
 
 -- 11. Mostre o nome e o salário de cada funcionário. Extraordinariamente, cada funcionário
 -- receberá um acréscimo neste salário de 10 reais para cada hospedagem realizada.
- update funcionario  f1 
+ /*update funcionario  f1 
     set salario=salario+( 
             ( select count(*) from funcionario f
                     full join hospedagem hpg on f.cod_func=hpg.cod_func
                         where hpg.cod_func=f1.cod_func
             )*10
         )
+  */  
+select nome,salario,count(cod_hospeda) as qtde_hospedagens,salario+ count(cod_hospeda) * 10 from 
+    funcionario f full join  hospedagem hpg
+    on f.cod_func=hpg.cod_func 
+        group by  nome,salario
 
 -- 12. Listagem das categorias cadastradas e para aquelas que possuem apartamentos, relacionar
 -- também o número do apartamento, ordenada pelo nome da categoria e pelo número do
@@ -112,7 +117,13 @@ select * from
 
 -- 16. Sem usar subquery, o nome dos hóspedes que nasceram na mesma data do hóspede de
 -- código 2.
-select nome from hospede where dt_nasc in(select dt_nasc from hospede where cod_hosp=2) and cod_hosp!=2
+-- select nome from hospede where dt_nasc in(select dt_nasc from hospede where cod_hosp=2) and cod_hosp!=2
+SELECT H2.NOME
+FROM HOSPEDE H 
+JOIN HOSPEDE H2
+ON (H.COD_HOSP = 2 
+AND H2.COD_HOSP != 2 )
+WHERE H.DT_NASC = H2.DT_NASC
 -- 17. O nome do hóspede mais velho que se hospedou na categoria mais cara mo ano de 2017.
 select * from 
 	hospede h join hospedagem hpg on h.cod_hosp=hpg.cod_hosp
