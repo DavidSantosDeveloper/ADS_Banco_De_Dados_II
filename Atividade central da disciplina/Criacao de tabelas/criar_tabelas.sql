@@ -11,3 +11,11 @@ CREATE TABLE loja(
     numero int,
     constraint pk_loja primary key (cod_loja)
 );
+
+CREATE TABLE fornecedor(
+    cod_fornecedor bigint not null,
+    nome text not null,
+    telefone varchar(255),
+    constraint pk_fornecedor primary key(cod_fornecedor) 
+);
+
