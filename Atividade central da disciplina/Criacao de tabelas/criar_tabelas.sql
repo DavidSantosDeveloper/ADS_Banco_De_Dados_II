@@ -19,3 +19,9 @@ CREATE TABLE fornecedor(
     constraint pk_fornecedor primary key(cod_fornecedor) 
 );
 
+CREATE TABLE produto(
+    cod_produto bigint not null,
+    nome text not null,
+    categoria varchar(255),
+    constraint pk_produto primary key(cod_produto)
+);
