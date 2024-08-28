@@ -38,3 +38,10 @@ CREATE TABLE cliente(
     telefone varchar(20),
     constraint pk_cliente primary key(cod_cliente)
 );
+
+CREATE TABLE cargo(
+    cod_cargo bigint not null,
+    nome varchar(255) not null,
+    descricao text,
+    constraint pk_cargo primary key(cod_cargo)
+);
