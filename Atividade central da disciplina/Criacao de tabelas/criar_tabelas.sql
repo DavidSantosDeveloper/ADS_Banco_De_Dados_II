@@ -45,3 +45,20 @@ CREATE TABLE cargo(
     descricao text,
     constraint pk_cargo primary key(cod_cargo)
 );
+
+CREATE TABLE funcionario(
+    cod_funcionario bigint not null,
+    nome text not null,
+    telefone varchar(20),
+    salario decimal(30,2),
+    dt_nasc Date,
+    cpf varchar(20),
+    cep varchar(40),
+    pais varchar(255),
+    estado varchar(255),
+    cidade varchar(255),
+    bairro varchar(255),
+    logradouro varchar(255),
+    numero varchar(255),
+    constraint pk_funcionario primary key(cod_funcionario)
+);
