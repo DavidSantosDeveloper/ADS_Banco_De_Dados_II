@@ -32,3 +32,9 @@ CREATE TABLE fornecedor(
     telefone varchar(20),
     constraint pk_fornecedor primary key(cod_fornecedor)
 );
+CREATE TABLE cliente(
+    cod_cliente bigint not null,
+    nome text not null,
+    telefone varchar(20),
+    constraint pk_cliente primary key(cod_cliente)
+);
