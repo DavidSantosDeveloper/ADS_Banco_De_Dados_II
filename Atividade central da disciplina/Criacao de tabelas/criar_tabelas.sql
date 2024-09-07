@@ -88,4 +88,25 @@ CREATE TABLE item_pedido(
 );
 
 
+CREATE TABLE venda(
+    cod_venda serial not null,
+    dt_venda date not null,
+    valor_total numeric(50,2) not null,
+    cod_cliente bigint not null references cliente (cod_cliente),
+    cod_funcionario bigint not null references pedido (cod_pedido),
+    constraint pk_venda primary key(cod_venda)
+);
+
+CREATE TABLE item_venda(
+    cod_item_venda serial not null,
+    quantidade bigint not null,
+    valor_unitario numeric(50,2) not null,
+    valor_total numeric(50,2) not null,
+    cod_estoque bigint not null references estoque (cod_estoque),
+    cod_venda bigint not null references venda (cod_venda),
+    constraint pk_item_venda primary key(cod_item_venda)
+);
+
+
+
 
