@@ -62,3 +62,15 @@ CREATE TABLE funcionario(
     numero varchar(255),
     constraint pk_funcionario primary key(cod_funcionario)
 );
+
+
+-- Tabelas dependentes
+
+
+
+CREATE TABLE pedido(
+    cod_pedido serial not null,
+    cod_fornecedor bigint not null references fornecedor (cod_fornecedor),
+    cod_funcionario bigint not null references funcionario (cod_funcionario),
+    constraint pk_pedido primary key(cod_pedido)
+);
