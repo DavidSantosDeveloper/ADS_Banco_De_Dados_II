@@ -26,12 +26,6 @@ CREATE TABLE produto(
     constraint pk_produto primary key(cod_produto)
 );
 
-CREATE TABLE fornecedor(
-    cod_fornecedor serial not null,
-    nome text not null,
-    telefone varchar(20),
-    constraint pk_fornecedor primary key(cod_fornecedor)
-);
 CREATE TABLE cliente(
     cod_cliente serial not null,
     nome text not null,
@@ -74,3 +68,13 @@ CREATE TABLE pedido(
     cod_funcionario bigint not null references funcionario (cod_funcionario),
     constraint pk_pedido primary key(cod_pedido)
 );
+
+CREATE TABLE estoque(
+    cod_estoque serial not null,
+    cod_loja bigint not null references loja (cod_loja),
+    cod_produto bigint not null references funcionario (cod_funcionario),
+    quantidade bigint not null,
+    constraint pk_estoque primary key(cod_estoque)
+);
+
+
