@@ -71,20 +71,21 @@ CREATE TABLE pedido(
 
 CREATE TABLE estoque(
     cod_estoque serial not null,
+    quantidade bigint not null,
     cod_loja bigint not null references loja (cod_loja),
     cod_produto bigint not null references funcionario (cod_funcionario),
-    quantidade bigint not null,
     constraint pk_estoque primary key(cod_estoque)
 );
 
 CREATE TABLE item_pedido(
     cod_item_pedido serial not null,
-    cod_estoque bigint not null references estoque (cod_estoque),
-    cod_pedido bigint not null references pedido (cod_pedido),
     quantidade bigint not null,
     valor_unitario numeric(50,2) not null,
     valor_total numeric(50,2) not null,
+    cod_estoque bigint not null references estoque (cod_estoque),
+    cod_pedido bigint not null references pedido (cod_pedido),
     constraint pk_item_pedido primary key(cod_item_pedido)
 );
+
 
 
