@@ -77,4 +77,14 @@ CREATE TABLE estoque(
     constraint pk_estoque primary key(cod_estoque)
 );
 
+CREATE TABLE item_pedido(
+    cod_item_pedido serial not null,
+    cod_estoque bigint not null references estoque (cod_estoque),
+    cod_pedido bigint not null references pedido (cod_pedido),
+    quantidade bigint not null,
+    valor_unitario numeric(50,2) not null,
+    valor_total numeric(50,2) not null,
+    constraint pk_item_pedido primary key(cod_item_pedido)
+);
+
 
