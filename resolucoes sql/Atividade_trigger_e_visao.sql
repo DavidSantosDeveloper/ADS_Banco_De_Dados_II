@@ -142,6 +142,7 @@ on livro for each row execute procedure CRUD_livro();
 
 
 
+
 -- c) Crie um trigger que sempre que houver inserções, remoções ou alterações na tabela 
 -- "Item_pedido", haja a atualização da "quant_itens_pedidos" e do "valor_total_pedido" da 
 -- tabela "pedido", bem como a atualização da quantidade em estoque da tabela Livro.
