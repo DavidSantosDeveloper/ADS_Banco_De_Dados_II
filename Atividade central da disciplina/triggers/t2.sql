@@ -561,3 +561,5 @@ $valida_item_venda$ language plpgsql;
 
  create or replace trigger trigger_item_venda_cadrastro before insert
  on item_venda for each row execute procedure valida_item_venda();
+
+
