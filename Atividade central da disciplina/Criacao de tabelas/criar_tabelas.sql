@@ -22,7 +22,8 @@ CREATE TABLE fornecedor(
 CREATE TABLE produto(
     cod_produto serial not null,
     nome text not null,
-    categoria varchar(255),
+    valor numeric(10,2) not null,
+    categoria varchar(255) not null,
     constraint pk_produto primary key(cod_produto)
 );
 
@@ -43,17 +44,18 @@ CREATE TABLE cargo(
 CREATE TABLE funcionario(
     cod_funcionario serial not null,
     nome text not null,
-    telefone varchar(20),
-    salario decimal(30,2),
-    dt_nasc Date,
-    cpf varchar(20),
-    cep varchar(40),
-    pais varchar(255),
-    estado varchar(255),
-    cidade varchar(255),
-    bairro varchar(255),
-    logradouro varchar(255),
-    numero varchar(255),
+    telefone varchar(20) not null,
+    salario decimal(30,2) not null,
+    dt_nasc Date not null,
+    cpf varchar(20) not null,
+    cep varchar(40) not null,
+    pais varchar(255) not null,
+    estado varchar(255) not null,
+    cidade varchar(255) not null,
+    bairro varchar(255) not null,
+    logradouro varchar(255) not null,
+    numero varchar(255) not null,
+    cod_cargo bigint not null ,
     constraint pk_funcionario primary key(cod_funcionario)
 );
 
@@ -72,8 +74,8 @@ CREATE TABLE pedido(
 CREATE TABLE estoque(
     cod_estoque serial not null,
     quantidade bigint not null,
-    cod_loja bigint not null references loja (cod_loja),
-    cod_produto bigint not null references funcionario (cod_funcionario),
+    cod_loja bigint not null ,
+    cod_produto bigint not null ,
     constraint pk_estoque primary key(cod_estoque)
 );
 
@@ -82,8 +84,8 @@ CREATE TABLE item_pedido(
     quantidade bigint not null,
     valor_unitario numeric(50,2) not null,
     valor_total numeric(50,2) not null,
-    cod_estoque bigint not null references estoque (cod_estoque),
-    cod_pedido bigint not null references pedido (cod_pedido),
+    cod_estoque bigint not null ,
+    cod_pedido bigint not null ,
     constraint pk_item_pedido primary key(cod_item_pedido)
 );
 
@@ -92,8 +94,8 @@ CREATE TABLE venda(
     cod_venda serial not null,
     dt_venda date not null,
     valor_total numeric(50,2) not null,
-    cod_cliente bigint not null references cliente (cod_cliente),
-    cod_funcionario bigint not null references pedido (cod_pedido),
+    cod_cliente bigint not null ,
+    cod_funcionario bigint not null ,
     constraint pk_venda primary key(cod_venda)
 );
 
@@ -102,8 +104,8 @@ CREATE TABLE item_venda(
     quantidade bigint not null,
     valor_unitario numeric(50,2) not null,
     valor_total numeric(50,2) not null,
-    cod_estoque bigint not null references estoque (cod_estoque),
-    cod_venda bigint not null references venda (cod_venda),
+    cod_estoque bigint not null ,
+    cod_venda bigint not null ,
     constraint pk_item_venda primary key(cod_item_venda)
 );
 
