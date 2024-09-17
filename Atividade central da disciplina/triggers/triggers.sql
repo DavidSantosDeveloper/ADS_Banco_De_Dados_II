@@ -576,13 +576,21 @@ $valida_venda$ language plpgsql;
  -- >>>>>>>>>>>>>>>>  INSERT
 create or replace function valida_item_venda() returns trigger as $valida_item_venda$
 begin
-    -- cod_item_venda
-    if new.cod_item_venda null then
-        raise exception 'A chave primaria nao pode ser nula! ';
+
+    
+    -- cod_item_venda (cod_item_venda é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+        if new.cod_item_venda null then
+            raise exception 'A chave primaria nao pode ser nula! ';
+        end if;
+        if exists(SELECT cod_item_venda from item_venda where cod_item_venda=new.cod_item_venda) then
+            raise exception 'Já existe um item_venda usando a chave primaria % na tabela! ',new.cod_item_venda;
+        end if; 
+
     end if;
-    if exists(SELECT cod_item_venda from item_venda where cod_item_venda=new.cod_item_venda) then
-        raise exception 'Já existe um item_venda usando a chave primaria % na tabela! ',new.cod_item_venda;
-    end if;
+   
+   -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
 
      -- cod_estoque
     if new.cod_estoque null then
@@ -592,6 +600,7 @@ begin
      IF NOT EXISTS (SELECT 1 FROM estoque WHERE cod_estoque = NEW.cod_estoque) THEN
         RAISE EXCEPTION 'VALIDACAO: Não foi encontrado nenhum estoque com o código % na tabela. ', NEW.cod_estoque;
     END IF;
+
     -- cod_venda
     if new.cod_venda is null  then
         raise exception 'o campo cod_venda não pode ser nulo!';
@@ -613,13 +622,10 @@ begin
         raise exception 'o campo valor_total  invalido!';
     end if;
 
-   
-    
-
     return new;
 end;
 $valida_item_venda$ language plpgsql;
 
 
- create or replace trigger trigger_item_venda_cadrastro before insert
+ create or replace trigger trigger_valida_item_venda before insert OR update
  on item_venda for each row execute procedure valida_item_venda();
