@@ -459,14 +459,22 @@ $valida_item_pedido$ language plpgsql;
  -- >>>>>>>>>>>>>>>>  INSERT
 create or replace function valida_pedido() returns trigger as $valida_pedido$
 begin
-    -- cod_pedido
-    if exists(SELECT cod_pedido from pedido where cod_pedido=new.cod_pedido) then
-        raise exception 'Já existe um pedido usando a chave primaria % na tabela! ',new.cod_pedido;
-    end if;
 
-    if new.pedido null then
-        raise exception 'A chave primaria não pode ser nula!';
+
+    -- cod_pedido (cod_pedido é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+          if exists(SELECT cod_pedido from pedido where cod_pedido=new.cod_pedido) then
+             raise exception 'Já existe um pedido usando a chave primaria % na tabela! ',new.cod_pedido;
+          end if;
+
+          if new.pedido null then
+             raise exception 'A chave primaria não pode ser nula!';
+          end if;
     end if;
+   
+   -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
+
 
    -- cod_fornecedor
     if new.cod_fornecedor is null  then
@@ -491,7 +499,7 @@ end;
 $valida_pedido$ language plpgsql;
 
 
- create or replace trigger trigger_pedido_cadrastro before insert
+ create or replace trigger trigger_valida_pedido before insert OR update
  on pedido for each row execute procedure valida_pedido();
 
 
@@ -503,17 +511,24 @@ $valida_pedido$ language plpgsql;
  ========================================
  */
  
- -- >>>>>>>>>>>>>>>>  INSERT
+ -- >>>>>>>>>>>>>>>>  INSERT e UPDATE
 create or replace function valida_venda() returns trigger as $valida_venda$
 begin
-    -- cod_venda
-    if exists(SELECT cod_venda from venda where cod_venda=new.cod_venda) then
-        raise exception 'Já existe uma venda usando a chave primaria % na tabela! ',new.cod_venda;
-    end if;
 
-    if new.venda is null then
-        raise exception 'A chave primaria não pode ser nula!';
+    -- cod_venda (cod_venda é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+        if exists(SELECT cod_venda from venda where cod_venda=new.cod_venda) then
+            raise exception 'Já existe uma venda usando a chave primaria % na tabela! ',new.cod_venda;
+        end if;
+
+        if new.venda is null then
+            raise exception 'A chave primaria não pode ser nula!';
+        end if;
+
     end if;
+   
+   -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
 
     -- dt_venda
     if new.dt_venda is null  then
@@ -523,8 +538,6 @@ begin
     if new.valor_total is null or new.valor_total<0 then
         raise exception 'o campo valor_total  invalido!';
     end if;
-
-
    -- cod_cliente
     if new.cod_fornecedor is null  then
         raise exception 'o campo cod_cliente não pode ser nulo!';
@@ -532,7 +545,6 @@ begin
     IF NOT EXISTS (SELECT 1 FROM cliente  WHERE cod_cliente = NEW.cod_cliente) THEN
         RAISE EXCEPTION 'VALIDACAO: Não foi encontrado nenhum cliente com o código % na tabela cliente. ', NEW.cod_cliente;
     END IF;
-
     -- cod_funcionario
     if new.cod_funcionario is null  then
         raise exception 'o campo cod_funcionario não pode ser nulo!';
@@ -542,13 +554,12 @@ begin
     END IF;
     
     
-
     return new;
 end;
 $valida_venda$ language plpgsql;
 
 
- create or replace trigger trigger_venda_cadrastro before insert
+ create or replace trigger trigger_valida_venda before insert OR update
  on venda for each row execute procedure valida_venda();
 
 
