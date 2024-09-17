@@ -96,18 +96,23 @@ $valida_cliente$ language plpgsql;
  ========================================
  */
 
- -- >>>>>>>>>>>>>>>>  INSERT
+ -- >>>>>>>>>>>>>>>>  INSERT e UPDATE
 create or replace function valida_cargo() returns trigger as $valida_cargo$
 begin
 
-    if exists(SELECT cod_cargo from cargo where cod_cargo=new.cod_cargo)  then
-        raise exception 'Já existe um cargo usando a chave primaria % na tabela! ',new.cod_cargo;
+    -- cod_cargo (cod_cargo é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+        if exists(SELECT cod_cargo from cargo where cod_cargo=new.cod_cargo)  then
+            raise exception 'Já existe um cargo usando a chave primaria % na tabela! ',new.cod_cargo;
+        end if;
+
+        if new.cod_cargo is null then
+            raise exception 'A chave primaria não pode ser nula!';
+        end if;       
     end if;
 
-    if new.cod_cargo is null then
-        raise exception 'A chave primaria não pode ser nula!';
-    end if;
-
+     -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
     if new.nome is null  then
         raise exception 'o campo nome tem valor inválido!';
     end if;
@@ -117,7 +122,7 @@ end;
 $valida_cargo$ language plpgsql;
 
 
- create or replace trigger trigger_cargo_cadrastro before insert
+ create or replace trigger trigger_valida_cargo before insert OR update
  on cargo for each row execute procedure valida_cargo();
 
 
@@ -130,18 +135,25 @@ $valida_cargo$ language plpgsql;
  ========================================
  */
 
- -- >>>>>>>>>>>>>>>>  INSERT
+ -- >>>>>>>>>>>>>>>>  INSERT e UPDATE
 create or replace function valida_loja() returns trigger as $valida_loja$
 begin
 
-    if exists(SELECT cod_loja from loja where cod_loja=new.cod_loja) then
-        raise exception 'Já existe uma loja usando a chave primaria % na tabela! ',new.cod_loja;
+    
+    -- cod_cargo (cod_cargo é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+        if exists(SELECT cod_loja from loja where cod_loja=new.cod_loja) then
+            raise exception 'Já existe uma loja usando a chave primaria % na tabela! ',new.cod_loja;
+        end if;
+
+        if new.cod_loja is null then
+            raise exception 'A chave primaria não pode ser nula!';
+        end if;   
     end if;
 
-    if new.cod_loja is null then
-        raise exception 'A chave primaria não pode ser nula!';
-    end if;
 
+    -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
     if new.nome is null  then
         raise exception 'o campo nome tem valor inválido!',new.nome;
     end if;
@@ -175,7 +187,7 @@ end;
 $valida_loja$ language plpgsql;
 
 
- create or replace trigger trigger_loja_cadrastro before insert
+ create or replace trigger trigger_valida_loja before insert OR update
  on loja for each row execute procedure valida_loja();
 
 
