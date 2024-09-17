@@ -377,7 +377,7 @@ end;
 $valida_estoque$ language plpgsql;
 
 
- create or replace trigger trigger_valida_estoque before insert
+ create or replace trigger trigger_valida_estoque before insert OR update
  on estoque for each row execute procedure valida_estoque();
 
 
@@ -388,15 +388,25 @@ $valida_estoque$ language plpgsql;
  ||                                    ||
  ========================================
  */
+
+ 
  
  -- >>>>>>>>>>>>>>>>  INSERT
 create or replace function valida_item_pedido() returns trigger as $valida_item_pedido$
 begin
-    -- cod_item_pedido
-    if exists(SELECT cod_item_pedido from item_pedido where cod_item_pedido=new.cod_item_pedido) then
-        raise exception 'Já existe um item_pedido usando a chave primaria % na tabela! ',new.cod_item_pedido;
+    -- cod_item_pedido (cod_item_pedido é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+         if exists(SELECT cod_item_pedido from item_pedido where cod_item_pedido=new.cod_item_pedido) then
+            raise exception 'Já existe um item_pedido usando a chave primaria % na tabela! ',new.cod_item_pedido;
+         end if;
+        if new.cod_item_pedido is null then
+            raise exception 'A chave primária não pode ser nula! ';
+        end if;
     end if;
-
+   
+     -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
+    
      -- cod_estoque
     if new.cod_estoque null then
         raise exception 'A chave primaria não pode ser nula!';
@@ -434,7 +444,7 @@ end;
 $valida_item_pedido$ language plpgsql;
 
 
- create or replace trigger trigger_item_pedido_cadrastro before insert
+ create or replace trigger trigger_valida_item_pedido before insert OR update
  on item_pedido for each row execute procedure valida_item_pedido();
 
 
