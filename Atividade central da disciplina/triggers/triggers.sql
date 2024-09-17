@@ -7,7 +7,7 @@
  */
 
 -- >>>>>>>>>>>>>>>>  INSERT
-create or replace function valida_fornecedor() returns trigger as $valida_fornecedor$
+create or replace function insert_fornecedor() returns trigger as $insert_fornecedor$
 begin
     -- Cod_fornecedor
     if exists(SELECT cod_fornecedor from fornecedor where cod_fornecedor=new.cod_fornecedor) then
@@ -28,11 +28,11 @@ begin
 
     return new;
 end;
-$valida_fornecedor$ language plpgsql;
+$insert_fornecedor$ language plpgsql;
 
 
  create or replace trigger trigger_fornecedor_cadrastro before insert 
- on fornecedor for each row execute procedure valida_fornecedor();
+ on fornecedor for each row execute procedure insert_fornecedor();
 
 -- >>>>>>>>>>> UPDATE
 
