@@ -9,21 +9,21 @@
 -- >>>>>>>>>>>>>>>>  INSERT
 create or replace function valida_fornecedor() returns trigger as $valida_fornecedor$
 begin
-
+    -- Cod_fornecedor
     if exists(SELECT cod_fornecedor from fornecedor where cod_fornecedor=new.cod_fornecedor) then
         raise exception 'Já existe um fornecedor usando a chave primaria % na tabela! ',new.cod_fornecedor;
     end if;
 
     if new.cod_fornecedor is null then
-        raise exception 'O valor % para chave primaria é invalido! ',new.cod_fornecedor;
+        raise exception 'chave primaria não pode ser nula! ';
     end if;
-
+     -- Cod_nome
     if new.nome is null  then
-        raise exception 'o campo % tem valor inválido!',new.nome;
+        raise exception 'o campo nome tem valor inválido!';
     end if;
 
-    if new.telefone is null then
-        raise exception 'o campo % tem valor inválido!',new.telefone;
+    if new.telefone is null or  not VALIDAR_TELEFONE(new.telefone) then
+        raise exception 'o campo telefone tem valor inválido!';
     end if;
 
     return new;
@@ -54,16 +54,16 @@ begin
         raise exception 'Já existe um cliente usando a chave primaria % na tabela! ',new.cod_fornecedor;
     end if;
 
-    if new.cod_fornecedor is null then
+    if new.cod_cliente is null then
         raise exception 'A chave primaria não pode ser nula!';
     end if;
 
     if new.nome is null  then
-        raise exception 'o campo % tem valor inválido!',new.nome;
+        raise exception 'o campo nome tem valor inválido!';
     end if;
 
-    if new.telefone is null then
-        raise exception 'o campo % tem valor inválido!',new.telefone;
+    if new.telefone is null or  not VALIDAR_TELEFONE(new.telefone) then
+        raise exception 'o campo telefone tem valor inválido!';
     end if;
 
     return new;
@@ -98,7 +98,7 @@ begin
     end if;
 
     if new.nome is null  then
-        raise exception 'o campo % tem valor inválido!',new.nome;
+        raise exception 'o campo nome tem valor inválido!';
     end if;
 
     return new;
@@ -132,9 +132,9 @@ begin
     end if;
 
     if new.nome is null  then
-        raise exception 'o campo % tem valor inválido!',new.nome;
+        raise exception 'o campo nome tem valor inválido!',new.nome;
     end if;
-     if new.telefone is null  then
+     if new.telefone is null or  not VALIDAR_TELEFONE(new.telefone) then
         raise exception 'o campo % tem valor inválido!',new.telefone;
     end if;
     if new.cep is null  then
@@ -191,13 +191,13 @@ begin
     end if;
 
     if new.nome is null  then
-        raise exception 'o campo % tem valor inválido!',new.nome;
+        raise exception 'o campo % tem valor inválido!';
     end if;
      if new.valor  is null  or new.valor <0 then
-        raise exception 'o campo % tem valor inválido!',new.valor;
+        raise exception 'o campo valor tem valor inválido!';
     end if;
     if new.categoria is null  then
-        raise exception 'o campo % tem valor inválido!',new.categoria;
+        raise exception 'o campo categoria tem valor inválido!';
     end if;
 
 
@@ -235,7 +235,7 @@ begin
     if new.nome is null  then
         raise exception 'o campo nome tem valor inválido!';
     end if;
-     if new.telefone  is null  then
+     if new.telefone  is null or not VALIDAR_TELEFONE (new.telefone) then
         raise exception 'o campo telefone tem valor inválido!';
     end if;
     if new.salario is null or new.salario<0 then
