@@ -332,18 +332,25 @@ $valida_funcionario$ language plpgsql;
  ========================================
  */
  
- -- >>>>>>>>>>>>>>>>  INSERT
+ -- >>>>>>>>>>>>>>>>  INSERT e UPDATE
 create or replace function valida_estoque() returns trigger as $valida_estoque$
 begin
-    -- cod_estoque
-    if exists(SELECT cod_estoque from estoque where cod_estoque=new.cod_estoque) then
-        raise exception 'Já existe um estoque usando a chave primaria % na tabela! ',new.cod_estoque;
+
+    -- cod_estoque (cod_estoque é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+        if exists(SELECT cod_estoque from estoque where cod_estoque=new.cod_estoque) then
+            raise exception 'Já existe um estoque usando a chave primaria % na tabela! ',new.cod_estoque;
+        end if;
+
+        if new.cod_estoque null then
+            raise exception 'A chave primaria não pode ser nula!';
+        end if;
     end if;
 
-    if new.cod_estoque null then
-        raise exception 'A chave primaria não pode ser nula!';
-    end if;
-      -- quantidade
+    -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
+    
+    -- quantidade
     if new.quantidade is null or new.quantidade<0 then
         raise exception 'o campo quantidade  invalido!';
     end if;
@@ -370,7 +377,7 @@ end;
 $valida_estoque$ language plpgsql;
 
 
- create or replace trigger trigger_estoque_cadrastro before insert
+ create or replace trigger trigger_valida_estoque before insert
  on estoque for each row execute procedure valida_estoque();
 
 
