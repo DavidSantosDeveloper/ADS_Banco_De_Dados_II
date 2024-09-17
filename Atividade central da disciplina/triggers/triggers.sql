@@ -43,6 +43,7 @@ $valida_fornecedor$ language plpgsql;
 -- somente tabelas com chaves estrangeiras precisam de trigger para excluir as linhas referenciadas na tabela estrangeira
 
 
+
 /*
  ========================================
  ||                                    ||
@@ -51,18 +52,23 @@ $valida_fornecedor$ language plpgsql;
  ========================================
  */
 
--- >>>>>>>>>>>>>>>>  INSERT
+-- >>>>>>>>>>>>>>>>  INSERT e UPDATE
 create or replace function valida_cliente() returns trigger as $valida_cliente$
 begin
 
-    if exists(SELECT cod_cliente from cliente where cod_cliente=new.cod_cliente)  then
-        raise exception 'Já existe um cliente usando a chave primaria % na tabela! ',new.cod_fornecedor;
+    -- cod_cliente (cod_cliente é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+            if exists(SELECT cod_cliente from cliente where cod_cliente=new.cod_cliente)  then
+                raise exception 'Já existe um cliente usando a chave primaria % na tabela! ',new.cod_fornecedor;
+            end if;
+
+            if new.cod_cliente is null then
+                raise exception 'A chave primaria não pode ser nula!';
+            end if;      
     end if;
 
-    if new.cod_cliente is null then
-        raise exception 'A chave primaria não pode ser nula!';
-    end if;
-
+     -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
     if new.nome is null  then
         raise exception 'o campo nome tem valor inválido!';
     end if;
@@ -76,7 +82,7 @@ end;
 $valida_cliente$ language plpgsql;
 
 
- create or replace trigger trigger_cliente_cadrastro before insert
+ create or replace trigger trigger_valida_cliente before insert OR update
  on cliente for each row execute procedure valida_cliente();
 
 
