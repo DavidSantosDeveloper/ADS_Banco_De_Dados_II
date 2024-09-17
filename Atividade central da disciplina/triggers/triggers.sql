@@ -140,7 +140,7 @@ create or replace function valida_loja() returns trigger as $valida_loja$
 begin
 
     
-    -- cod_cargo (cod_cargo é a chave primária da tabela, 
+    -- cod_loja (cod_loja é a chave primária da tabela, 
     --  só devemos nos preocupar em validar ela na operação INSERT)
     if TG_OP='INSERT' then
         if exists(SELECT cod_loja from loja where cod_loja=new.cod_loja) then
@@ -201,18 +201,24 @@ $valida_loja$ language plpgsql;
  ========================================
  */
 
- -- >>>>>>>>>>>>>>>>  INSERT
+ -- >>>>>>>>>>>>>>>>  INSERT e UPDATE
 create or replace function valida_produto() returns trigger as $valida_produto$
 begin
 
-    if exists(SELECT cod_produto from produto where cod_produto=new.cod_produto)  then
-        raise exception 'Já existe um produto  usando a chave primaria % na tabela! ',new.cod_loja;
+     -- cod_produto (cod_produto é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+        if exists(SELECT cod_produto from produto where cod_produto=new.cod_produto)  then
+            raise exception 'Já existe um produto  usando a chave primaria % na tabela! ',new.cod_loja;
+        end if;
+
+        if new.cod_loja is null then
+            raise exception 'A chave primaria não pode ser nula!';
+        end if;
     end if;
 
-    if new.cod_loja is null then
-        raise exception 'A chave primaria não pode ser nula!';
-    end if;
 
+    -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
     if new.nome is null  then
         raise exception 'o campo % tem valor inválido!';
     end if;
@@ -229,7 +235,7 @@ end;
 $valida_produto$ language plpgsql;
 
 
- create or replace trigger trigger_produto_cadrastro before insert
+ create or replace trigger trigger_valida_produto before insert OR update
  on produto for each row execute procedure valida_produto();
 
 
