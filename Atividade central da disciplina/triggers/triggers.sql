@@ -249,18 +249,23 @@ $valida_produto$ language plpgsql;
  ========================================
  */
 
- -- >>>>>>>>>>>>>>>>  INSERT
+ -- >>>>>>>>>>>>>>>>  INSERT e UPDATE
 create or replace function valida_funcionario() returns trigger as $valida_funcionario$
 begin
 
-    if exists(SELECT cod_funcionario from funcionario where cod_funcionario=new.cod_funcionario) then
-        raise exception 'Já existe um funcionário usando a chave primaria % na tabela! ',new.cod_funcionario;
-    end if;
+    -- cod_funcionario (cod_funcionario é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+        if exists(SELECT cod_funcionario from funcionario where cod_funcionario=new.cod_funcionario) then
+            raise exception 'Já existe um funcionário usando a chave primaria % na tabela! ',new.cod_funcionario;
+        end if;
 
-    if new.cod_funcionario is null then
-        raise exception 'A chave primaria não pode ser nula!';
+        if new.cod_funcionario is null then
+            raise exception 'A chave primaria não pode ser nula!';
+        end if;
     end if;
-
+   
+  -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
     if new.nome is null  then
         raise exception 'o campo nome tem valor inválido!';
     end if;
@@ -312,7 +317,7 @@ end;
 $valida_funcionario$ language plpgsql;
 
 
- create or replace trigger trigger_funcionario_cadrastro before insert
+ create or replace trigger trigger_valida_funcionario before insert OR update
  on funcionario for each row execute procedure valida_funcionario();
 
 
