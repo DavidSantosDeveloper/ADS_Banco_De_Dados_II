@@ -6,18 +6,23 @@
  ========================================
  */
 
--- >>>>>>>>>>>>>>>>  INSERT
-create or replace function insert_fornecedor() returns trigger as $insert_fornecedor$
+-- >>>>>>>>>>>>>>>>  INSERT e UPDATE
+create or replace function valida_fornecedor() returns trigger as $valida_fornecedor$
 begin
-    -- Cod_fornecedor
-    if exists(SELECT cod_fornecedor from fornecedor where cod_fornecedor=new.cod_fornecedor) then
-        raise exception 'Já existe um fornecedor usando a chave primaria % na tabela! ',new.cod_fornecedor;
-    end if;
+     -- Cod_fornecedor (Cod_fornecedor é a chave primária da tabela, 
+    --  só devemos nos preocupar em validar ela na operação INSERT)
+    if TG_OP='INSERT' then
+            if exists(SELECT cod_fornecedor from fornecedor where cod_fornecedor=new.cod_fornecedor) then
+                raise exception 'Já existe um fornecedor usando a chave primaria % na tabela! ',new.cod_fornecedor;
+            end if;
 
-    if new.cod_fornecedor is null then
-        raise exception 'chave primaria não pode ser nula! ';
+            if new.cod_fornecedor is null then
+                raise exception 'chave primaria não pode ser nula! ';
+            end if;
     end if;
-     -- Cod_nome
+   
+    
+     -- TODOS OS DEMAIS CAMPOS precisam ser validados nas operacoes INSERT e UPDATE
     if new.nome is null  then
         raise exception 'o campo nome tem valor inválido!';
     end if;
@@ -28,15 +33,15 @@ begin
 
     return new;
 end;
-$insert_fornecedor$ language plpgsql;
+$valida_fornecedor$ language plpgsql;
 
 
- create or replace trigger trigger_fornecedor_cadrastro before insert 
- on fornecedor for each row execute procedure insert_fornecedor();
-
--- >>>>>>>>>>> UPDATE
+ create or replace trigger trigger_valida_fornecedor before insert OR update
+ on fornecedor for each row execute procedure valida_fornecedor();
 
 -- >>>>>>>>>>> DELETE
+-- somente tabelas com chaves estrangeiras precisam de trigger para excluir as linhas referenciadas na tabela estrangeira
+
 
 /*
  ========================================
