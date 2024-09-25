@@ -66,12 +66,12 @@ begin
      end if;
 
     if not exists( select 1 from pedido where cod_pedido=_cod_pedido) THEN    
-        insert into pedido(_cod_pedido,cod_forncecedor,CURRENT_DATE);
-        insert into item_pedido(default,_cod_pedido,cod_produto,_quant_produto,valor_total_item);
+        insert into pedido values (_cod_pedido,cod_forncecedor,CURRENT_DATE);
+        insert into item_pedido values (DEFAULT,_cod_pedido,cod_produto,_quant_produto,valor_total_item);
     end if;
 
     if exists( select 1 from pedido where cod_pedido=_cod_pedido) THEN      
-        insert into item_pedido(default,_cod_pedido,cod_produto,_quant_produto,valor_total_item);
+        insert into item_pedido(DEFAULT,_cod_pedido,cod_produto,_quant_produto,valor_total_item);
     end if;
 
 
