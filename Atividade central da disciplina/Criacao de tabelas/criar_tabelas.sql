@@ -55,7 +55,7 @@ CREATE TABLE funcionario(
     bairro varchar(255) not null,
     logradouro varchar(255) not null,
     numero varchar(255) not null,
-    cod_cargo bigint not null ,
+    cod_cargo bigint ,
     constraint pk_funcionario primary key(cod_funcionario)
 );
 
@@ -66,16 +66,16 @@ CREATE TABLE funcionario(
 
 CREATE TABLE pedido(
     cod_pedido serial not null,
-    cod_fornecedor bigint not null references fornecedor (cod_fornecedor),
-    cod_funcionario bigint not null references funcionario (cod_funcionario),
+    cod_fornecedor bigint ,
+    cod_funcionario bigint,
     constraint pk_pedido primary key(cod_pedido)
 );
 
 CREATE TABLE estoque(
     cod_estoque serial not null,
     quantidade bigint not null,
-    cod_loja bigint not null ,
-    cod_produto bigint not null ,
+    cod_loja bigint ,
+    cod_produto bigint ,
     constraint pk_estoque primary key(cod_estoque)
 );
 
@@ -84,8 +84,8 @@ CREATE TABLE item_pedido(
     quantidade bigint not null,
     valor_unitario numeric(50,2) not null,
     valor_total numeric(50,2) not null,
-    cod_estoque bigint not null ,
-    cod_pedido bigint not null ,
+    cod_estoque bigint DEFAULT 0,
+    cod_pedido bigint DEFAULT 0,
     constraint pk_item_pedido primary key(cod_item_pedido)
 );
 
@@ -94,8 +94,8 @@ CREATE TABLE venda(
     cod_venda serial not null,
     dt_venda date not null,
     valor_total numeric(50,2) not null,
-    cod_cliente bigint not null ,
-    cod_funcionario bigint not null ,
+    cod_cliente bigint  ,
+    cod_funcionario bigint ,
     constraint pk_venda primary key(cod_venda)
 );
 
@@ -104,8 +104,8 @@ CREATE TABLE item_venda(
     quantidade bigint not null,
     valor_unitario numeric(50,2) not null,
     valor_total numeric(50,2) not null,
-    cod_estoque bigint not null ,
-    cod_venda bigint not null ,
+    cod_estoque bigint default 0,
+    cod_venda bigint default 0,
     constraint pk_item_venda primary key(cod_item_venda)
 );
 

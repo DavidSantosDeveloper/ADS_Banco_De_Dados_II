@@ -271,6 +271,7 @@ begin
 
     if new.cod_cargo is null  then
         raise exception 'o campo cod_cargo não pode ser nulo!';
+
     end if;
     IF NOT EXISTS (SELECT 1 FROM cargo WHERE cod_cargo = NEW.cod_cargo) THEN
         RAISE EXCEPTION 'VALIDACAO: Não foi encontrado nenhum cargo com o código % na tabela. ', NEW.cod_cargo;
@@ -426,12 +427,12 @@ begin
     END IF;
 
     -- cod_funcionario
-    if new.cod_funcionario is null  then
-        raise exception 'o campo cod_funcionario não pode ser nulo!';
+    if new.cod_funcionario is not null  then
+        IF NOT EXISTS (SELECT 1 FROM funcionario  WHERE cod_funcionario = NEW.cod_funcionario) THEN
+            RAISE EXCEPTION 'VALIDACAO: Não foi encontrado nenhum funcionario com o código % na tabela. ', NEW.cod_funcionario;
+        END IF;
     end if;
-    IF NOT EXISTS (SELECT 1 FROM funcionario  WHERE cod_funcionario = NEW.cod_funcionario) THEN
-        RAISE EXCEPTION 'VALIDACAO: Não foi encontrado nenhum funcionario com o código % na tabela. ', NEW.cod_funcionario;
-    END IF;
+    
     
     
 
